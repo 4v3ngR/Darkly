@@ -52,7 +52,7 @@
     <entry name="CornerRadius" type="Int">
       <default>6</default>
       <min>1</min>
-      <max>16</max>
+      <max>32</max>
     </entry>
 
     <!-- button size -->

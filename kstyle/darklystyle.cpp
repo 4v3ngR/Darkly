@@ -249,6 +249,7 @@ void Style::polish(QApplication *app)
     bool nonIntegerScale = (dpr > static_cast<qreal>(1) && static_cast<qreal>(qRound(dpr)) != dpr);
     if (nonIntegerScale)
         _isOpaque = true;
+
     if (_translucentWidgets.size() > 0)
         _translucentWidgets.clear();
 
@@ -274,13 +275,17 @@ void Style::polish(QWidget *widget)
     _toolsAreaManager->registerWidget(widget);
 
     // enable mouse over effects for all necessary widgets
-    if (qobject_cast<QAbstractItemView *>(widget) || qobject_cast<QAbstractSpinBox *>(widget) || qobject_cast<QCheckBox *>(widget)
-        || qobject_cast<QComboBox *>(widget) || qobject_cast<QDial *>(widget) || qobject_cast<QLineEdit *>(widget) || qobject_cast<QPushButton *>(widget)
-        || qobject_cast<QRadioButton *>(widget) || qobject_cast<QScrollBar *>(widget) || qobject_cast<QSlider *>(widget)
-        || qobject_cast<QSplitterHandle *>(widget) || qobject_cast<QTabBar *>(widget) || qobject_cast<QTextEdit *>(widget)
-        || qobject_cast<QToolButton *>(widget) || widget->inherits("KTextEditor::View")) {
-        widget->setAttribute(Qt::WA_Hover);
+    QWidget *pw = widget->parentWidget();
+    if (qobject_cast<QAbstractButton*>(widget)
+            || qobject_cast<QAbstractSlider*>(widget)
+            || qobject_cast<QAbstractItemView*>(pw)
+            || widget->inherits("QSplitterHandle")
+            || widget->inherits("QHeaderView")
+            || widget->inherits("QSizeGrip"))
+    {
+        widget->setAttribute(Qt::WA_Hover, true);
     }
+
 
     /*if( widget && qobject_cast<const QGroupBox*>( widget ) ) {
         addEventFilter( widget );
@@ -323,7 +328,18 @@ void Style::polish(QWidget *widget)
         if (qobject_cast<QMenu *>(widget))
             break;
 
-        else if (widget->inherits("QTipLabel") || qobject_cast<QLabel *>(widget) // a floating label, as in Filelight
+        QWidget *pw = widget->parentWidget();
+        if (qobject_cast<QAbstractButton*>(widget)
+                || qobject_cast<QAbstractSlider*>(widget)
+                || qobject_cast<QAbstractItemView*>(pw)
+                || widget->inherits("QSplitterHandle")
+                || widget->inherits("QHeaderView")
+                || widget->inherits("QSizeGrip"))
+        {
+            widget->setAttribute(Qt::WA_Hover, true);
+        }
+
+        if (widget->inherits("QTipLabel") || qobject_cast<QLabel *>(widget) // a floating label, as in Filelight
                  || widget->inherits("QComboBoxPrivateContainer") // at most, a menu
                  /* like Vokoscreen's (old) QvkRegionChoise */
                  || (widget->windowFlags().testFlag(Qt::WindowStaysOnTopHint) && widget->testAttribute(Qt::WA_NoSystemBackground)
@@ -3754,27 +3770,6 @@ bool Style::drawFramePrimitive(const QStyleOption *option, QPainter *painter, co
     const auto &palette(option->palette);
     const auto &rect(option->rect);
 
-    // from kvantum
-    if (_isDolphin) {
-        if (QWidget *pw = widget->parentWidget()) {
-            if (StyleConfigData::transparentDolphinView()
-                // not renaming area
-                && !qobject_cast<QAbstractScrollArea *>(pw)
-                // only Dolphin's view
-                && QString(pw->metaObject()->className()).startsWith("Dolphin")) {
-                if (widget->property("VISIBLE-SEPARATORS").toBool()) {
-                    QRect copy = rect.adjusted(12, 0, -12, 0);
-                    painter->setRenderHint(QPainter::Antialiasing);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawLine(copy.topLeft(), copy.topRight());
-                    painter->drawLine(copy.bottomLeft(), copy.bottomRight());
-                }
-                return true;
-            }
-        }
-    }
-
     // detect title widgets
     const bool isTitleWidget(StyleConfigData::titleWidgetDrawFrame() && widget && widget->parent() && widget->parent()->inherits("KTitleWidget"));
 
@@ -3800,6 +3795,31 @@ bool Style::drawFramePrimitive(const QStyleOption *option, QPainter *painter, co
     // retrieve animation mode and opacity
     _animations->inputWidgetEngine().frameAnimationMode(widget);
     _animations->inputWidgetEngine().frameOpacity(widget);
+
+    // from kvantum
+    if (_isDolphin) {
+        if (QWidget *pw = widget->parentWidget()) {
+            if (StyleConfigData::transparentDolphinView()
+                // not renaming area
+                && !qobject_cast<QAbstractScrollArea *>(pw)
+                // only Dolphin's view
+                && QString(pw->metaObject()->className()).startsWith("Dolphin")) {
+                if (widget->property("VISIBLE-SEPARATORS").toBool()) {
+                    QRect copy = rect.adjusted(12, 0, -12, 0);
+                    painter->setRenderHint(QPainter::Antialiasing);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawLine(copy.topLeft(), copy.topRight());
+                    painter->drawLine(copy.bottomLeft(), copy.bottomRight());
+                }
+
+                QColor background = isTitleWidget ? palette.color(widget->backgroundRole()) : palette.color(QPalette::Base);
+                background.setAlphaF(0.75); //TODO: make the opacity level configurable
+                _helper->renderFrame(painter, option->rect, background, windowActive, enabled);
+                return true;
+            }
+        }
+    }
 
     // render
     if (!StyleConfigData::sidePanelDrawFrame() && widget && widget->property(PropertyNames::sidePanelView).toBool()) {
@@ -8632,37 +8652,16 @@ bool Style::hasAlteredBackground(const QWidget *widget) const
 */
 void Style::setSurfaceFormat(QWidget *widget) const
 {
-    if (!widget || !_helper->compositingActive() || _subApp || _isLibreoffice || _isKonsole)
-        return;
+    if (!widget) return;
 
     if (widget->testAttribute(Qt::WA_WState_Created) || widget->testAttribute(Qt::WA_TranslucentBackground) || widget->testAttribute(Qt::WA_NoSystemBackground)
         || widget->autoFillBackground() // video players like kaffeine
         || _translucentWidgets.contains(widget))
         return;
 
-    if (widget->inherits("QTipLabel"))
+    if (widget->inherits("QTipLabel")) {
         return;
-
-    else if (qobject_cast<QMenu *>(widget)) {
-        QWindow *window = widget->windowHandle();
-        if (window) {
-            QSurfaceFormat format = window->format();
-            format.setAlphaBufferSize(8);
-            window->setFormat(format);
-        }
-    }
-
-    else {
-        // this stops flickering on transparent toolbar, menubar, tabbar
-        if (_isBarsOpaque && !_isOpaque) {
-            widget->setAttribute(Qt::WA_TranslucentBackground);
-            widget->setAttribute(Qt::WA_NoSystemBackground, false);
-        }
-
-        if (_isPlasma || _isOpaque || !widget->isWindow() || !_helper->shouldWindowHaveAlpha(widget->palette(), _isDolphin)) {
-            return;
-        }
-
+    } else {
         switch (widget->windowFlags() & Qt::WindowType_Mask) {
         case Qt::Window:
         case Qt::Dialog:
@@ -8708,8 +8707,7 @@ void Style::setSurfaceFormat(QWidget *widget) const
         }
     }
 
-    if (!_helper->compositingActive())
-        return;
+    if (!_helper->compositingActive()) return;
 
     widget->setAttribute(Qt::WA_TranslucentBackground);
 
