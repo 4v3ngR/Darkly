@@ -307,11 +307,10 @@ void Style::polish(QWidget *widget)
         }
     }
 
-    if (!_isKonsole){
     if (StyleConfigData::toolBarOpacity() < 100 || StyleConfigData::menuBarOpacity() < 100 || StyleConfigData::tabBarOpacity() < 100
         || StyleConfigData::dolphinSidebarOpacity() < 100) {
         _isBarsOpaque = true;
-    }}
+    }
 
     // translucent (window) color scheme support
     switch (widget->windowFlags() & Qt::WindowType_Mask) {
@@ -407,6 +406,8 @@ void Style::polish(QWidget *widget)
         if (widget->autoFillBackground())
             widget->setAutoFillBackground(false);
     }
+
+    widget->setAutoFillBackground(false);
 
     // scrollarea polishing is somewhat complex. It is moved to a dedicated method
     polishScrollArea(qobject_cast<QAbstractScrollArea *>(widget));
@@ -1545,45 +1546,16 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         }
         // paint background
         if (widget && event->type() == QEvent::Paint) {
-            if (widget->isWindow() && !_isKonsole && widget->testAttribute(Qt::WA_StyledBackground) && widget->testAttribute(Qt::WA_TranslucentBackground)) {
+            if (widget->isWindow() && widget->testAttribute(Qt::WA_StyledBackground) && widget->testAttribute(Qt::WA_TranslucentBackground)) {
                 switch (widget->windowFlags() & Qt::WindowType_Mask) {
                 case Qt::Window:
                 case Qt::Dialog:
-                // case Qt::Popup:
-                // case Qt::ToolTip:
+                case Qt::Popup:
+                case Qt::ToolTip:
                 case Qt::Sheet: {
-                    if (qobject_cast<QMenu *>(widget))
-                        break;
-                    if (!_translucentWidgets.contains(widget))
-                        break;
                     QPainter p(widget);
                     p.setClipRegion(static_cast<QPaintEvent *>(event)->region());
                     p.fillRect(widget->rect(), QColor(widget->palette().color(QPalette::Window)));
-
-                    // separator between the window and decoration
-                    if (_helper->titleBarColor(true).alphaF() * 100.0 < 100 && !_isKonsole) {
-                        p.setBrush(Qt::NoBrush);
-                        p.setPen(QColor(0, 0, 0, 40));
-                        p.drawLine(widget->rect().topLeft(), widget->rect().topRight());
-                    }
-
-                    // shadow between toolbar and the rest of the window
-                    /*if( (widget->palette().color( QPalette::Window ).alpha()/255)*100  < _helper->titleBarColor( true ).alphaF()*100.0 )
-                    {
-                        if( DarklyPrivate::possibleTranslucentToolBars.size() == 1 )
-                        {
-                            QSet<const QWidget *>::const_iterator i = DarklyPrivate::possibleTranslucentToolBars.constBegin();
-                            const QToolBar *tb = qobject_cast<const QToolBar*>( *i );
-
-                            if( tb ){
-                                if( tb->orientation() == Qt::Horizontal) {
-                                    p.setPen( QColor( 0, 0, 0, 40 ) );
-                                    p.drawLine( widget->rect().topLeft() + QPoint( 0, tb->y() + tb->height() ), widget->rect().topRight() + QPoint( 0, tb->y() +
-                    tb->height() ) );
-                                }
-                            }
-                        }
-                    }*/
                 }
                 }
             }
@@ -1595,7 +1567,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
             if (widget->palette().color(QPalette::Window).alpha() <= 255) {
                 if ((qobject_cast<QToolBar *>(widget) || qobject_cast<QMenuBar *>(widget)) || _isBarsOpaque || _helper->titleBarColor(true).alphaF() < 1.0) {
                     if (event->type() == QEvent::Move || event->type() == QEvent::Show || event->type() == QEvent::Hide) {
-                        if (_translucentWidgets.contains(widget->window()) && !_isKonsole) {
+                        if (_translucentWidgets.contains(widget->window()) /*&& !_isKonsole*/) {
                             _blurHelper->forceUpdate(widget->window());
                         }
                     }
@@ -1603,7 +1575,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
             }
         }
 
-        /*if( widget && qobject_cast<const QGroupBox*>( widget ) ) {
+        if (widget && qobject_cast<const QGroupBox *>(widget)) {
             if( event->type() == QEvent::Enter ) {
 
                 if( widget->property("HOVER").toBool() == false ) {
@@ -1619,7 +1591,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
                     widget->setProperty("HOVER", false);
                 }
             }
-        }*/
+        }
     }
 
     // fallback
@@ -3796,70 +3768,18 @@ bool Style::drawFramePrimitive(const QStyleOption *option, QPainter *painter, co
     _animations->inputWidgetEngine().frameAnimationMode(widget);
     _animations->inputWidgetEngine().frameOpacity(widget);
 
-    // from kvantum
-    if (_isDolphin) {
-        if (QWidget *pw = widget->parentWidget()) {
-            if (StyleConfigData::transparentDolphinView()
-                // not renaming area
-                && !qobject_cast<QAbstractScrollArea *>(pw)
-                // only Dolphin's view
-                && QString(pw->metaObject()->className()).startsWith("Dolphin")) {
-                if (widget->property("VISIBLE-SEPARATORS").toBool()) {
-                    QRect copy = rect.adjusted(12, 0, -12, 0);
-                    painter->setRenderHint(QPainter::Antialiasing);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawLine(copy.topLeft(), copy.topRight());
-                    painter->drawLine(copy.bottomLeft(), copy.bottomRight());
-                }
-
-                QColor background = isTitleWidget ? palette.color(widget->backgroundRole()) : palette.color(QPalette::Base);
-                background.setAlphaF(0.75); //TODO: make the opacity level configurable
-                _helper->renderFrame(painter, option->rect, background, windowActive, enabled);
-                return true;
-            }
-        }
+    if (widget->property("VISIBLE-SEPARATORS").toBool()) {
+        QRect copy = rect.adjusted(12, 0, -12, 0);
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen(Qt::NoPen);
+        painter->drawLine(copy.topLeft(), copy.topRight());
+        painter->drawLine(copy.bottomLeft(), copy.bottomRight());
     }
 
-    // render
-    if (!StyleConfigData::sidePanelDrawFrame() && widget && widget->property(PropertyNames::sidePanelView).toBool()) {
-        const auto outline(_helper->sidePanelOutlineColor(palette));
-        const bool reverseLayout(option->direction == Qt::RightToLeft);
-        const Side side(reverseLayout ? SideRight : SideLeft);
-        if ((widget->window()->windowFlags() & Qt::WindowType_Mask) == Qt::Dialog) {
-            QColor background(palette.color(QPalette::Base));
-
-            if (StyleConfigData::dolphinSidebarOpacity() < 100 && _isDolphin) {
-                _helper->renderTransparentArea(painter, rect);
-
-                background.setAlphaF(StyleConfigData::dolphinSidebarOpacity() / 100.0);
-            }
-
-            painter->fillRect(rect, background);
-
-            if (_helper->titleBarColor(true).alpha() != palette.color(QPalette::Window).alpha()) {
-                painter->setRenderHint(QPainter::Antialiasing, false);
-                painter->setPen(QColor(0, 0, 0, 30));
-                painter->drawLine(rect.topLeft(), rect.topRight());
-                painter->setRenderHint(QPainter::Antialiasing);
-            }
-        }
-        _helper->renderSidePanelFrame(painter, rect, outline, side);
-
-    } else {
-        /*if( _frameShadowFactory->isRegistered( widget ) ) // WHAT does this do??
-        {
-
-            // update frame shadow factory
-            _frameShadowFactory->updateShadowsGeometry( widget, rect );
-            _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode );
-
-        }*/
-
-        const auto background(isTitleWidget ? palette.color(widget->backgroundRole()) : palette.color(QPalette::Base));
-        _helper->renderFrame(painter, rect, background, windowActive, enabled);
-    }
-
+    QColor background = isTitleWidget ? palette.color(widget->backgroundRole()) : palette.color(QPalette::Base);
+    background.setAlphaF(0.75); // TODO: make the opacity level configurable
+    _helper->renderFrame(painter, option->rect, background, windowActive, enabled);
     return true;
 }
 
@@ -6879,7 +6799,7 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     // opacity only target dolphin and konsole
     // if ((_isDolphin || _isKonsole) && (StyleConfigData::tabBarOpacity() < 100) && (widget->parentWidget()->inherits("DolphinTabWidget") ||
     // widget->parentWidget()->inherits("Konsole::TabbedViewContainer"))) {
-    if ((_isDolphin || _isKonsole) && (StyleConfigData::tabBarOpacity() < 100) && !_isOpaque) {
+    if (/*(_isDolphin || _isKonsole) &&*/ (StyleConfigData::tabBarOpacity() < 100) && !_isOpaque) {
         // override the tab background color if adjustToDarkThemes is false
         if (StyleConfigData::adjustToDarkThemes()) {
             backgroundColor = _helper->transparentBarBgColor(backgroundColor, painter, rect, BarType::TabBar);
