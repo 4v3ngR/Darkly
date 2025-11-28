@@ -1,37 +1,37 @@
-add_definitions(-DTRANSLATION_DOMAIN="darkly_kwin_deco")
+add_definitions(-DTRANSLATION_DOMAIN="glass_kwin_deco")
 
 ################# configuration #################
-configure_file(config-darkly.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-darkly.h )
+configure_file(config-glass.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-glass.h )
 
 ################# includes #################
-include_directories(${CMAKE_SOURCE_DIR}/libdarklycommon)
-include_directories(${CMAKE_BINARY_DIR}/libdarklycommon)
+include_directories(${CMAKE_SOURCE_DIR}/libglasscommon)
+include_directories(${CMAKE_BINARY_DIR}/libglasscommon)
 
 ################# newt target #################
 ### plugin classes
-set(darklydecoration_SRCS
-    darklybutton.cpp
-    darklydecoration.cpp
-    darklyexceptionlist.cpp
-    darklysettingsprovider.cpp
+set(glassdecoration_SRCS
+    glassbutton.cpp
+    glassdecoration.cpp
+    glassexceptionlist.cpp
+    glasssettingsprovider.cpp
 )
 ### build library
-kconfig_add_kcfg_files(darklydecoration_SRCS darklysettings.kcfgc)
-add_library(darklydecoration MODULE
-    ${darklydecoration_SRCS}
-    ${darklydecoration_config_SRCS}
-    ${darklydecoration_config_PART_FORMS_HEADERS})
+kconfig_add_kcfg_files(glassdecoration_SRCS glasssettings.kcfgc)
+add_library(glassdecoration MODULE
+    ${glassdecoration_SRCS}
+    ${glassdecoration_config_SRCS}
+    ${glassdecoration_config_PART_FORMS_HEADERS})
 
-set_target_properties(darklydecoration PROPERTIES
-    OUTPUT_NAME org.kde.darkly
+set_target_properties(glassdecoration PROPERTIES
+    OUTPUT_NAME org.kde.glass
 )
 
-target_link_libraries(darklydecoration
+target_link_libraries(glassdecoration
      PUBLIC
         Qt6::DBus
         KDecoration3::KDecoration
      PRIVATE
-        darklycommon6
+        glasscommon6
         KF6::CoreAddons
         KF6::ConfigWidgets
         KF6::GuiAddons
@@ -40,6 +40,6 @@ target_link_libraries(darklydecoration
         KF6::WindowSystem
         KF6::KCMUtils
 )
-install(TARGETS darklydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/${KDECORATION_PLUGIN_DIR})
-install(FILES config/darklydecorationconfig.desktop DESTINATION  ${KDE_INSTALL_DATADIR}/kservices6)
+install(TARGETS glassdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/${KDECORATION_PLUGIN_DIR})
+install(FILES config/glassdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_DATADIR}/kservices6)
 add_subdirectory(config)

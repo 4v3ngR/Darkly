@@ -29,9 +29,9 @@
       packages = perSystem (
         { pkgs }:
         rec {
-          default = darkly-qt6;
-          darkly-qt6 = pkgs.kdePackages.callPackage ./nix/package.nix { };
-          darkly-qt5 = pkgs.libsForQt5.callPackage ./nix/package.nix { qtPackages = pkgs.libsForQt5; };
+          default = glass-qt6;
+          glass-qt6 = pkgs.kdePackages.callPackage ./nix/package.nix { };
+          glass-qt5 = pkgs.libsForQt5.callPackage ./nix/package.nix { qtPackages = pkgs.libsForQt5; };
         }
       );
 

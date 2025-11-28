@@ -10,8 +10,8 @@ CMAKE_OPTS=(
     -Wno-dev
     -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
 )
-PROJECT="darkly"
-_PROJECT="Darkly"
+PROJECT="glass"
+_PROJECT="Glass"
 
 OLD_PROJECT="lightly"
 _OLD_PROJECT="Lightly"

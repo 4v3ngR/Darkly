@@ -1,11 +1,16 @@
+# Glass
 
 # About this fork
 
+This fork is a fork of [Darkly](https://github.com/Bali10050/Darkly) with the goal of simplification and compatibility with the kde and qt apps that I happen to use. Ultimately I want to remove as many app specific patches as possible while maintaining the shiny glass experience that can be obtained with the help of Better Blur.
+
+## About the Darkly fork
+ 
 This fork attempts to revive lightly with a different approach from boehs, with the assumption that Luwx won't ever resume his project.
 
 This means that this fork allows real changes, and not just maintainence.
 
-![Darkly](https://github.com/user-attachments/assets/0d60725e-c146-4e1e-9889-fe8317d52b22)
+![Glass](https://github.com/user-attachments/assets/0d60725e-c146-4e1e-9889-fe8317d52b22)
 
 ## What changed?
 
@@ -14,37 +19,10 @@ This means that this fork allows real changes, and not just maintainence.
 - [x] Change the defaults to fit the normal use-cases better
 - [x] Add my own colorscheme to it
 - [x] Make installation in all major distros easy
-- [x] Rename the project to something like „Darkly”
+- [x] Rename the project to something like „Glass”
 - [x] Maintain the project
 
 ## Installation
-
-## Automatic
-
-### Thanks to @DeltaCopy, you can use one of these install methods:
-
-#### Fedora copr
-
-<https://copr.fedorainfracloud.org/coprs/deltacopy/darkly/>
-
-#### AUR
-
-<https://aur.archlinux.org/packages/darkly>
-
-<https://aur.archlinux.org/packages/darkly-bin>
-
-#### Pre-built packages
-
-<https://github.com/Bali10050/Darkly/releases>
-
-***
-#### Solus
-Thanks to @Hurican-Solas
-
-```
-sudo eopkg install darkly
-```
-
 
 ## Manual
 
@@ -55,27 +33,27 @@ sudo eopkg install darkly
 > [!NOTE]
 > A script called `install.sh` is now available which both builds and installs this application style.
 
-`./install.sh` will remove if existing, build and install Darkly using both QT5/QT6 dependencies.
+`./install.sh` will remove if existing, build and install Glass using both QT5/QT6 dependencies.
 
 `./install.sh QT5` will build & install using only QT5/KF5 dependencies.
 
 `./install.sh QT6` will build & install using only QT6/KF6 dependencies.
 
-`./install.sh remove` will remove Darkly.
+`./install.sh remove` will remove Glass.
 
 ***
 
 ### Flatpak
 
-Due to flatpak's [restriction on file system access](https://docs.flatpak.org/en/latest/sandbox-permissions.html) (in short no access to system libraries, /dev, etc), Darkly flatpak bundle is only an extension of KDE runtime.\
-If you want to apply Darkly as the application style, you either need:
-- Darkly installed on the system via package manager (pacman, rpm, apt-get, etc) or
-- Set manually with QT_STYLE_OVERRIDE=Darkly env variable \[`sudo flatpak override --env=QT_QPA_PLATFORMTHEME=kde` (`sudo` only applies for flatpaks in /var/lib/flatpak, otherwise use `--user` without sudo)]
+Due to flatpak's [restriction on file system access](https://docs.flatpak.org/en/latest/sandbox-permissions.html) (in short no access to system libraries, /dev, etc), Glass flatpak bundle is only an extension of KDE runtime.\
+If you want to apply Glass as the application style, you either need:
+- Glass installed on the system via package manager (pacman, rpm, apt-get, etc) or
+- Set manually with QT_STYLE_OVERRIDE=Glass env variable \[`sudo flatpak override --env=QT_QPA_PLATFORMTHEME=kde` (`sudo` only applies for flatpaks in /var/lib/flatpak, otherwise use `--user` without sudo)]
 
 **Important (primarily) for users of immutable distros!**\
-Darkly won't show as an option in `System settings > Theme > Application styles` without system installation. Also, both Darkly runtime version and the KDE runtime version must match (if they don't match, the app won't use Darkly)
+Glass won't show as an option in `System settings > Theme > Application styles` without system installation. Also, both Glass runtime version and the KDE runtime version must match (if they don't match, the app won't use Glass)
 
-This brings some untentended behaviour (for any application style, not Darkly in particular), for example:
+This brings some untentended behaviour (for any application style, not Glass in particular), for example:
 - Changing color scheme partly applies for QWidget apps (not at all for QML-based)
 - Changing application style doesn't apply until the app is restarted
 
@@ -83,14 +61,14 @@ Manifests should have the latest versions of KDE Runtime and SDK. Change the ver
 
 #### Build with:
 ```
-org.flatpak.Builder flatpak-build --repo=local --force-clean --ccache org.kde.KStyle.Darkly6.json
+org.flatpak.Builder flatpak-build --repo=local --force-clean --ccache org.kde.KStyle.Glass6.json
 ```
 
-use `org.kde.KStyle.Darkly5.json` for KF5
+use `org.kde.KStyle.Glass5.json` for KF5
 
 #### Bundle with:
 ```
-flatpak build-bundle local/ darkly.flatpak runtime/org.kde.KStyle.Darkly/x86_64/<runtime_version>
+flatpak build-bundle local/ glass.flatpak runtime/org.kde.KStyle.Glass/x86_64/<runtime_version>
 ```
 
 ***
@@ -107,8 +85,8 @@ sudo xbps-install -Sy git extra-cmake-modules base-devel qt5-devel qt6-base-deve
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -125,8 +103,8 @@ sudo pacman -S --noconfirm cmake extra-cmake-modules kdecoration qt6-declarative
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -148,8 +126,8 @@ sudo dnf install -y git cmake extra-cmake-modules "cmake(KDecoration3)" kwin-dev
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -174,8 +152,8 @@ sudo zypper in --no-recommends git ninja cmake kf6-extra-cmake-modules kf6-kconf
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -198,8 +176,8 @@ sudo apt install -y git build-essential cmake kf6-extra-cmake-modules \
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -222,8 +200,8 @@ sudo dnf install -y git cmake extra-cmake-modules "cmake(KDecoration3)" kwin-dev
     "cmake(KF5KIO)" kf5-kpackage-devel kf5-kcmutils-devel qt5-qtquickcontrols2-devel \
     kf5-kirigami2-devel "cmake(KF5FrameworkIntegration)"
 
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
@@ -259,8 +237,8 @@ sudo apt-get install -y -qq cmake build-essential libkf5config-dev libkdecoratio
 ```
 
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -268,25 +246,25 @@ cd Darkly
 
 #### <u>NixOS</u>
 
-To install Darkly on NixOS, add the following line to your nixos flake
+To install Glass on NixOS, add the following line to your nixos flake
 ```nix
-environment.systemPackages = with pkgs; [ darkly-qt5 darkly ];
+environment.systemPackages = with pkgs; [ glass-qt5 glass ];
 qt.platformTheme = "qt5ct";
 ```
 For home-manager, add the following line
 ```nix
-qt.style.package = with pkgs; [ darkly-qt5 darkly ];
+qt.style.package = with pkgs; [ glass-qt5 glass ];
 qt.platformTheme.name = "qtct";
 ```
-To apply the theme, use qt5ct or qt6ct and select Darkly
+To apply the theme, use qt5ct or qt6ct and select Glass
 
-If you want to compile Darkly from its source, do the following
-1. add `inputs.darkly.url = "github:Bali10050/Darkly";` to `flake.nix`
+If you want to compile Glass from its source, do the following
+1. add `inputs.glass.url = "github:Bali10050/Glass";` to `flake.nix`
 
 2. use the following package names for home-manager or NixOS
 ```nix
-inputs.darkly.packages.${pkgs.system}.darkly-qt5
-inputs.darkly.packages.${pkgs.system}.darkly-qt6
+inputs.glass.packages.${pkgs.system}.glass-qt5
+inputs.glass.packages.${pkgs.system}.glass-qt6
 ```
 
 ---
@@ -300,8 +278,8 @@ doas apk add --virtual build-deps bash build-base clang21-extra-tools git cmake 
 ```
  
 ```
-git clone --single-branch --depth=1 https://github.com/Bali10050/Darkly.git
-cd Darkly
+git clone --single-branch --depth=1 https://github.com/Bali10050/Glass.git
+cd Glass
 ./install.sh
 ```
 
@@ -316,7 +294,7 @@ doas apk del build-deps
 
 ### Blurred icon rendering on Wayland with fractional scaling
 
-As referenced in https://github.com/Bali10050/Darkly/issues/14
+As referenced in https://github.com/Bali10050/Glass/issues/14
 
 On Wayland when scaling is set to >100% some icons appear blurred.
 
@@ -325,6 +303,3 @@ The fix for now until QT is updated is to add `QT_SCALE_FACTOR_ROUNDING_POLICY=R
 Restart to apply the changes.
 
 For further details see: https://bugs.kde.org/show_bug.cgi?id=479891
-
-### Issues with window decorations on older plasma versions
-For plasma versions below 6.3, please use [v0.5.16](https://github.com/Bali10050/Darkly/releases/tag/v0.5.16) or the [Darkly\(6.2\)](https://github.com/Bali10050/Darkly/tree/Darkly(6.2)) branch.

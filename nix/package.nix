@@ -12,7 +12,7 @@ let
   qtMajorVersion = lib.versions.major qtPackages.qtbase.version;
 in
 stdenv.mkDerivation (finalAttrs: {
-  pname = "darkly-qt${qtMajorVersion}";
+  pname = "glass-qt${qtMajorVersion}";
   version = lib.removeSuffix "\n" (builtins.readFile ../VERSION);
 
   src = cleanSourceWith {
@@ -60,9 +60,9 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   meta = with lib; {
-    description = "Fork of the Darkly breeze theme style that aims to be visually modern and minimalistic";
-    mainProgram = "darkly-settings6";
-    homepage = "https://github.com/Bali10050/Darkly";
+    description = "Fork of the Glass breeze theme style that aims to be visually modern and minimalistic";
+    mainProgram = "glass-settings6";
+    homepage = "https://github.com/Bali10050/Glass";
     license = licenses.gpl2Plus;
     platforms = platforms.all;
   };

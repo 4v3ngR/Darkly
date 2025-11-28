@@ -1,0 +1,6 @@
+[Misc]
+Name=Glass
+ConfigPage=kstyle_config/glassstyleconfig
+Comment=Widget style for Qt Applications
+[KDE]
+WidgetStyle=Glass

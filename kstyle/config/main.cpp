@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-// darklyanimationconfigitem.h
+// glassanimationconfigitem.h
 // animation configuration item
 // -------------------
 //
@@ -35,16 +35,16 @@
 //__________________________________________
 int main(int argc, char *argv[])
 {
-    KLocalizedString::setApplicationDomain("darkly_style_config");
+    KLocalizedString::setApplicationDomain("glass_style_config");
 
     QApplication app( argc, argv );
-    app.setApplicationName(i18n("Darkly Settings"));
-    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("darkly-settings")));
+    app.setApplicationName(i18n("Glass Settings"));
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("glass-settings")));
 
     KCMultiDialog dialog;
-    dialog.setWindowTitle(i18n("Darkly Settings"));
-    dialog.addModule(KPluginMetaData(QStringLiteral("kstyle_config/darklystyleconfig")));
-    dialog.addModule(KPluginMetaData(QStringLiteral("org.kde.kdecoration3.kcm/kcm_darklydecoration.so")));
+    dialog.setWindowTitle(i18n("Glass Settings"));
+    dialog.addModule(KPluginMetaData(QStringLiteral("kstyle_config/glassstyleconfig")));
+    dialog.addModule(KPluginMetaData(QStringLiteral("org.kde.kdecoration3.kcm/kcm_glassdecoration.so")));
     dialog.show();
 
     foreach( auto child, dialog.findChildren<QAbstractScrollArea*>() )

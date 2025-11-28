@@ -5,7 +5,7 @@ file(READ "${CMAKE_SOURCE_DIR}/VERSION" VER_RAW)
 string(STRIP ${VER_RAW} VER)
 
 project(
-    darkly
+    glass
     DESCRIPTION "A modern style for qt applications."
     VERSION ${VER}
 )
@@ -52,7 +52,7 @@ function(build_qt5)
     set(QT_MAJOR_VERSION 5)
     include(KDEInstallDirs5)
     include(KDECMakeSettings)
-    option(WITH_DECORATIONS "Build Darkly window decorations for KWin" ON)
+    option(WITH_DECORATIONS "Build Glass window decorations for KWin" ON)
 
     find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
@@ -83,13 +83,13 @@ function(build_qt5)
             TYPE OPTIONAL
             PURPOSE "Required to use KStyle convenience functionalities in style")
 
-    set(DARKLY_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
-    set(DARKLY_HAVE_QTQUICK ${Qt5Quick_FOUND})
+    set(GLASS_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
+    set(GLASS_HAVE_QTQUICK ${Qt5Quick_FOUND})
 
 
     #add_subdirectory(colors)
     add_subdirectory(kstyle kstyle5)
-    add_subdirectory(libdarklycommon libdarklycommon5)
+    add_subdirectory(libglasscommon libglasscommon5)
     #add_subdirectory(misc)
     unset(QUERY_EXECUTABLE CACHE)
 endfunction()
@@ -103,7 +103,7 @@ function(build_qt6)
     include(KDEInstallDirs6)
     include(KDECMakeSettings)
 
-    option(WITH_DECORATIONS "Build Darkly window decorations for KWin" ON)
+    option(WITH_DECORATIONS "Build Glass window decorations for KWin" ON)
 
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
     find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
@@ -135,8 +135,8 @@ function(build_qt6)
             TYPE OPTIONAL
             PURPOSE "Required to use KStyle convenience functionalities in style")
 
-    set(DARKLY_HAVE_KSTYLE ${KF6FrameworkIntegration_FOUND})
-    set(DARKLY_HAVE_QTQUICK ${Qt6Quick_FOUND})
+    set(GLASS_HAVE_KSTYLE ${KF6FrameworkIntegration_FOUND})
+    set(GLASS_HAVE_QTQUICK ${Qt6Quick_FOUND})
 
 
     add_library(Qt::Core ALIAS Qt6::Core)
@@ -149,7 +149,7 @@ function(build_qt6)
 
     #add_subdirectory(colors)
     add_subdirectory(kstyle kstyle6)
-    add_subdirectory(libdarklycommon libdarklycommon6)
+    add_subdirectory(libglasscommon libglasscommon6)
     #add_subdirectory(misc)
 
     if(WITH_DECORATIONS)
@@ -161,24 +161,24 @@ function(build_qt6)
 
     # create a Config.cmake and a ConfigVersion.cmake file and install them
     include(ECMSetupVersion)
-    ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX DARKLY
-                    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/DarklyConfigVersion.cmake"
-                    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kstyle6/config/darklystyleversion.h"
+    ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX GLASS
+                    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/GlassConfigVersion.cmake"
+                    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kstyle6/config/glassstyleversion.h"
     )
 
 
 
-    set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Darkly")
+    set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Glass")
 
     if (NOT FOR_FLATPAK)
-        configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/DarklyConfig.cmake.in"
-                                        "${CMAKE_CURRENT_BINARY_DIR}/DarklyConfig.cmake"
+        configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/GlassConfig.cmake.in"
+                                        "${CMAKE_CURRENT_BINARY_DIR}/GlassConfig.cmake"
                                         PATH_VARS KDE_INSTALL_FULL_DATADIR
                                         INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                                     )
 
-        install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/DarklyConfig.cmake"
-                        "${CMAKE_CURRENT_BINARY_DIR}/DarklyConfigVersion.cmake"
+        install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/GlassConfig.cmake"
+                        "${CMAKE_CURRENT_BINARY_DIR}/GlassConfigVersion.cmake"
                     DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
                     COMPONENT Devel
                 )

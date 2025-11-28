@@ -1,0 +1,6 @@
+File=glass.kcfg
+ClassName=StyleConfigData
+NameSpace=Glass
+Singleton=true
+Mutators=true
+GlobalEnums=true

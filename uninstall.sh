@@ -3,8 +3,8 @@
 styles=(
     "lightly"
     "Lightly"
-    "Darkly"
-    "darkly"
+    "Glass"
+    "glass"
 )
 
 test $(whoami) != "root" && echo "[ERROR]: This script needs sudo access to remove files." && exit 1

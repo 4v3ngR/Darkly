@@ -1,25 +1,25 @@
 #####  config classes ææææææ
 
-set(darklydecoration_config_SRCS
-  ../darklyexceptionlist.cpp
-    darklyconfigwidget.cpp
-    darklydetectwidget.cpp
-    darklyexceptiondialog.cpp
-    darklyexceptionlistwidget.cpp
-    darklyexceptionmodel.cpp
-    darklyitemmodel.cpp
+set(glassdecoration_config_SRCS
+  ../glassexceptionlist.cpp
+    glassconfigwidget.cpp
+    glassdetectwidget.cpp
+    glassexceptiondialog.cpp
+    glassexceptionlistwidget.cpp
+    glassexceptionmodel.cpp
+    glassitemmodel.cpp
 )
-ki18n_wrap_ui(darklydecoration_config_SRCS
-    ui/darklyconfigurationui.ui
-    ui/darklydetectwidget.ui
-    ui/darklyexceptiondialog.ui
-    ui/darklyexceptionlistwidget.ui
+ki18n_wrap_ui(glassdecoration_config_SRCS
+    ui/glassconfigurationui.ui
+    ui/glassdetectwidget.ui
+    ui/glassexceptiondialog.ui
+    ui/glassexceptionlistwidget.ui
 )
 
-kcoreaddons_add_plugin(kcm_darklydecoration SOURCES kcm_darklydecoration.cpp ${darklydecoration_config_SRCS} INSTALL_NAMESPACE "${KDECORATION_KCM_PLUGIN_DIR}")
-kconfig_add_kcfg_files(kcm_darklydecoration ../darklysettings.kcfgc)
-target_include_directories(kcm_darklydecoration PRIVATE ${CMAKE_SOURCE_DIR}/kdecoration ${CMAKE_BINARY_DIR}/kdecoration/)
-target_link_libraries(kcm_darklydecoration
+kcoreaddons_add_plugin(kcm_glassdecoration SOURCES kcm_glassdecoration.cpp ${glassdecoration_config_SRCS} INSTALL_NAMESPACE "${KDECORATION_KCM_PLUGIN_DIR}")
+kconfig_add_kcfg_files(kcm_glassdecoration ../glasssettings.kcfgc)
+target_include_directories(kcm_glassdecoration PRIVATE ${CMAKE_SOURCE_DIR}/kdecoration ${CMAKE_BINARY_DIR}/kdecoration/)
+target_link_libraries(kcm_glassdecoration
      PUBLIC
         Qt6::Core
         Qt6::Gui
@@ -34,4 +34,4 @@ target_link_libraries(kcm_darklydecoration
         KF6::WindowSystem
         KF6::KCMUtils
 )
-kcmutils_generate_desktop_file(kcm_darklydecoration)
+kcmutils_generate_desktop_file(kcm_glassdecoration)
