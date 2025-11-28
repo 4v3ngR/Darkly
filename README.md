@@ -4,11 +4,7 @@
 
 This fork is a fork of [Darkly](https://github.com/Bali10050/Darkly) with the goal of simplification and compatibility with the kde and qt apps that I happen to use. Ultimately I want to remove as many app specific patches as possible while maintaining the shiny glass experience that can be obtained with the help of Better Blur.
 
-## About the Darkly fork
- 
-This fork attempts to revive lightly with a different approach from boehs, with the assumption that Luwx won't ever resume his project.
-
-This means that this fork allows real changes, and not just maintainence.
+This is a preview using an unmodified breeze colorscheme.
 
 ![Glass](./.preview.png)
 
